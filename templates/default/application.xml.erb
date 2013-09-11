@@ -1,0 +1,19 @@
+<server <% if @description != nil -%> description="<%= @description %>"<% end -%> >
+
+<% if @features != nil && @features.size > 0 -%>
+    <featureManager>
+  <% @features.each do |feature| -%>
+        <feature><%= feature %></feature>
+  <% end -%>
+    </featureManager>
+<% end -%>
+
+    <application location="<%= @app_location -%>" 
+      <% if @app_name != nil -%> name="<%= @app_name %>" <% end -%>
+      <% if @app_id != nil -%> id="<%= @app_id %>" <% end -%>
+      <% if @app_type != nil -%> type="<%= @app_type %>" <% end -%>
+      <% if @app_context_root != nil -%> context-root="<%= @app_context_root %>" <% end -%>
+      <% if @app_autoStart != nil -%> autoStart="<%= @app_autoStart %>" <% end -%>
+    />
+
+</server>
