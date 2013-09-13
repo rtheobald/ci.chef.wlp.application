@@ -21,11 +21,7 @@ action :before_compile do
 end
 
 action :before_deploy do
-
   create_application_xml_file
-
-#  add_application
-
 end
 
 action :before_migrate do
@@ -41,14 +37,6 @@ action :after_restart do
 end
 
 protected
-
-def add_application
-    config = ApplicationWLP::Applications.load(node, new_resource.server_name)
-    config.include("${shared.config.dir}/#{new_resource.application.name}.xml")
-    if config.modified
-      config.save()
-    end
-end
 
 def create_application_xml_file
 
