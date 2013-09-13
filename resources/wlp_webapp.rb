@@ -17,8 +17,6 @@
 
 include ApplicationCookbook::ResourceBase
 
-attribute :server_name, :kind_of => [String, NilClass], :default => nil
-
 attribute :application_xml_template, :kind_of => [String, NilClass], :default => nil
 
 attribute :description, :kind_of => [String, NilClass], :default => nil

@@ -22,28 +22,18 @@ include Chef::Mixin::LanguageIncludeRecipe
 action :before_compile do
 
   # create server 
-  # TODO: bug in wlp_create causes fail is server already exists?
-  wlp_server "#{@serverName}" do
-    action :destroy
-  end
-  wlp_server "#{@serverName}" do
+  wlp_server "#{new_resource.server_name}" do
     action :create
   end
 
   # (TODO: don't undersatnd this bit) define service beforehand - otherwise notifications from ruby_block won't work
-  service "wlp-#{@serverName}" do
-#  service "wlp-Test1" do
+  service "wlp-#{new_resource.server_name}" do
     supports :start => true, :restart => true, :stop => true, :status => true
     action :nothing
   end
 
-
-  # replace the server.xml with the updated one which has the applications.xml include 
-  # the server config is in this cookbook attributes, TODO: how to have them in this recipe?
-  include_recipe "wlp::serverconfig"
-
   # add the applications.xml file
-  file "/opt/was/liberty/wlp/usr/servers/Test1/applications.xml" do
+  file "#{@utils.serversDirectory}/#{new_resource.server_name}/applications.xml" do
     action :create_if_missing
     owner new_resource.owner
     group new_resource.group
@@ -52,35 +42,25 @@ action :before_compile do
     content "<server description='Applications'></server>"
   end
 
-
-#  include_recipe "tomcat"
-#
-#  unless new_resource.restart_command
-#    new_resource.restart_command do
-#      run_context.resource_collection.find(:service => "tomcat").run_action(:restart)
-#    end
-#  end
+  # replace the server.xml with the updated one which has the applications.xml include 
+  # the server config is in this cookbook attributes, TODO: how to have them in this recipe?
+  include_recipe "wlp::serverconfig"
 
 end
 
 action :before_deploy do
-
-  new_resource = @new_resource
-
-#  # remove ROOT application
-#  # TODO create a LWRP to enable/disable tomcat apps
-#  directory "#{node['tomcat']['webapp_dir']}/ROOT" do
-#    recursive true
-#    action :delete
-#    not_if "test -L #{node['tomcat']['context_dir']}/ROOT.xml"
-#  end
-#
-#  link "#{node['tomcat']['context_dir']}/#{new_resource.application.name}.xml" do
-#    to "#{new_resource.application.path}/shared/#{new_resource.application.name}.xml"
-#    notifies :restart, resources(:service => "tomcat")
-#  end
-
+  add_application
 end
+
+# Add the new application include into the applications.xml file
+def add_application
+    config = ApplicationWLP::Applications.load(node, new_resource.server_name)
+    config.include("${shared.config.dir}/#{new_resource.application.name}.xml")
+    if config.modified
+      config.save()
+    end
+end
+
 
 action :before_migrate do
 end
@@ -92,4 +72,8 @@ action :before_restart do
 end
 
 action :after_restart do
+end
+
+def load_current_resource
+  @utils = Liberty::Utils.new(node)
 end

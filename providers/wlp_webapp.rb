@@ -22,11 +22,9 @@ end
 
 action :before_deploy do
 
-  create_hierarchy
-
   create_application_xml_file
 
-  add_application
+#  add_application
 
 end
 
@@ -44,29 +42,17 @@ end
 
 protected
 
-def create_hierarchy
-  %w{ log pids system }.each do |dir|
-    directory "#{new_resource.path}/shared/#{dir}" do
-      owner new_resource.owner
-      group new_resource.group
-      mode '0755'
-      recursive true
-    end
-  end
-end
-
 def add_application
     config = ApplicationWLP::Applications.load(node, new_resource.server_name)
-    config.include("/opt/was/liberty/wlp/usr/shared/config/#{new_resource.application.name}.xml")
+    config.include("${shared.config.dir}/#{new_resource.application.name}.xml")
     if config.modified
       config.save()
-#      notifies_delayed(:restart, resources(:service => "wlp-#{new_resource.server_name}"))
     end
 end
 
 def create_application_xml_file
 
-  template "/opt/was/liberty/wlp/usr/shared/config/#{new_resource.application.name}.xml" do
+  template "#{@utils.userDirectory}/shared/config/#{new_resource.application.name}.xml" do
     source new_resource.application_xml_template || "application.xml.erb"
     cookbook new_resource.application_xml_template ? new_resource.cookbook_name.to_s : "application_wlp"
     owner new_resource.owner
@@ -85,3 +71,8 @@ def create_application_xml_file
   end
 
 end
+
+def load_current_resource
+  @utils = Liberty::Utils.new(node)
+end
+

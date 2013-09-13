@@ -17,3 +17,5 @@
 
 include ApplicationCookbook::ResourceBase
 
+attribute :server_name, :kind_of => String
+
