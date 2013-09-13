@@ -1,8 +1,4 @@
-#
-# Cookbook Name:: application_java
-# Provider:: tomcat
-#
-# Copyright 2012, ZephirWorks
+# Cookbook Name:: wlp
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,24 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 include Chef::Mixin::LanguageIncludeRecipe
 
 action :before_compile do
 
-  # create server 
   wlp_server "#{new_resource.server_name}" do
+    config (new_resource.config)
     action :create
   end
 
-  # (TODO: don't undersatnd this bit) define service beforehand - otherwise notifications from ruby_block won't work
-  service "wlp-#{new_resource.server_name}" do
-    supports :start => true, :restart => true, :stop => true, :status => true
-    action :nothing
-  end
-
-  # add the applications.xml file
+  # add the default empty applications.xml file
   file "#{@utils.serversDirectory}/#{new_resource.server_name}/applications.xml" do
     action :create_if_missing
     owner new_resource.owner
@@ -41,10 +30,6 @@ action :before_compile do
     backup false
     content "<server description='Applications'></server>"
   end
-
-  # replace the server.xml with the updated one which has the applications.xml include 
-  # the server config is in this cookbook attributes, TODO: how to have them in this recipe?
-  include_recipe "wlp::serverconfig"
 
 end
 

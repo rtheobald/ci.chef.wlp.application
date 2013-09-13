@@ -19,3 +19,15 @@ include ApplicationCookbook::ResourceBase
 
 attribute :server_name, :kind_of => String
 
+attribute :config, :kind_of => Hash, :default => {
+            "httpEndpoint" => {
+              "id" => "defaultHttpEndpoint",
+              "host" => "*",
+              "httpPort" => "9080",
+              "httpsPort" => "9443"
+            },
+            "include" => {
+              "location" => "${server.config.dir}/applications.xml"
+            }
+          }
+
