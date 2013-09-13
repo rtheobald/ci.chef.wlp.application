@@ -49,7 +49,7 @@ def create_application_xml_file
     variables(
       :description => "#{new_resource.description || new_resource.application.name}",
       :features => new_resource.features,
-      :app_location => new_resource.application_location,
+      :app_location => "#{new_resource.application_location || (new_resource.path + '/current/' + IO::File.basename(new_resource.repository))}",
       :app_name => "#{new_resource.application.name}",
       :app_id => new_resource.application_id,
       :app_type => new_resource.application_type,
