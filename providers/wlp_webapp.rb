@@ -40,23 +40,23 @@ protected
 
 def create_application_xml_file
 
-  template "#{@utils.userDirectory}/shared/config/#{new_resource.application.name}.xml" do
-    source new_resource.application_xml_template || "application.xml.erb"
-    cookbook new_resource.application_xml_template ? new_resource.cookbook_name.to_s : "application_wlp"
-    owner new_resource.owner
-    group new_resource.group
-    mode "644"
-    variables(
-      :description => "#{new_resource.description || new_resource.application.name}",
-      :features => new_resource.features,
-      :app_location => "#{new_resource.application_location || (new_resource.path + '/current/' + IO::File.basename(new_resource.repository))}",
-      :app_name => "#{new_resource.application.name}",
-      :app_id => new_resource.application_id,
-      :app_type => new_resource.application_type,
-      :app_context_root => new_resource.application_context_root,
-      :app_autoStart => new_resource.application_autoStart
-    )
-  end
+    if !(new_resource.config)
+      config = {
+         "featureManager" => {
+            "feature" => new_resource.features
+         },
+         "application" => {
+            "name" => "#{new_resource.application.name}",
+            "location" => "#{new_resource.application_location || (new_resource.path + '/current/' + IO::File.basename(new_resource.repository))}"
+         }
+      }
+    else 
+      config = new_resource.config
+    end
+
+    wlp_config "#{@utils.userDirectory}/shared/config/#{new_resource.application.name}.xml" do
+      config config
+    end
 
 end
 

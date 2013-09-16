@@ -17,14 +17,6 @@
 
 include ApplicationCookbook::ResourceBase
 
-attribute :application_xml_template, :kind_of => [String, NilClass], :default => nil
-
-attribute :description, :kind_of => [String, NilClass], :default => nil
 attribute :features, :kind_of => Array, :default => []
-
 attribute :application_location, :kind_of => String
-attribute :application_id, :kind_of => [String, NilClass], :default => nil
-attribute :application_type, :kind_of => [String, NilClass], :default => nil
-attribute :application_context_root, :kind_of => [String, NilClass], :default => nil
-attribute :application_autoStart, :kind_of => [String, NilClass], :default => nil
-
+attribute :config, :kind_of => Hash
