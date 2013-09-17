@@ -18,7 +18,7 @@ action :before_compile do
 
   wlp_server "#{new_resource.server_name}" do
     config (new_resource.config)
-    action :create
+    action :create_if_missing
   end
 
   # add the default empty applications.xml file
