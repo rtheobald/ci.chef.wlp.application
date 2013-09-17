@@ -17,6 +17,7 @@
 
 include ApplicationCookbook::ResourceBase
 
+attribute :server_name, :kind_of => String
 attribute :features, :kind_of => Array, :default => []
 attribute :application_location, :kind_of => String
 attribute :config, :kind_of => Hash

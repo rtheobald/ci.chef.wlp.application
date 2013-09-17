@@ -40,7 +40,7 @@ end
 # Add the new application include into the applications.xml file
 def add_application
     config = ApplicationWLP::Applications.load(node, new_resource.server_name)
-    config.include("${shared.config.dir}/#{new_resource.application.name}.xml")
+    config.include("${server.config.dir}/#{new_resource.application.name}.xml")
     if config.modified
       config.save()
     end
