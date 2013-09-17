@@ -29,7 +29,7 @@ module ApplicationWLP
 
     def self.load(node, serverName)
       utils = Liberty::Utils.new(node)
-      applicationsXml = "#{utils.serversDirectory}/#{serverName}/applications.xml"
+      applicationsXml = "#{utils.serversDirectory}/#{serverName}/server.xml"
       f = File.open(applicationsXml)
       doc = REXML::Document.new(f)
       f.close
@@ -37,7 +37,7 @@ module ApplicationWLP
     end
 
     def save()
-      applicationsXmlNew = "#{@utils.serversDirectory}/#{@serverName}/applications.xml.new"
+      applicationsXmlNew = "#{@utils.serversDirectory}/#{@serverName}/server.xml.new"
       out = File.open(applicationsXmlNew, "w")
       formatter = REXML::Formatters::Pretty.new
       formatter.compact = true
@@ -46,7 +46,7 @@ module ApplicationWLP
 
       @utils.chown(applicationsXmlNew)
 
-      applicationsXml = "#{@utils.serversDirectory}/#{@serverName}/applications.xml"
+      applicationsXml = "#{@utils.serversDirectory}/#{@serverName}/server.xml"
       FileUtils.mv(applicationsXmlNew, applicationsXml)
     end
 

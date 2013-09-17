@@ -25,9 +25,6 @@ attribute :config, :kind_of => Hash, :default => {
               "host" => "*",
               "httpPort" => "9080",
               "httpsPort" => "9443"
-            },
-            "include" => {
-              "location" => "${server.config.dir}/applications.xml"
             }
           }
 

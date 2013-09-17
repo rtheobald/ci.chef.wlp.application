@@ -21,23 +21,20 @@ action :before_compile do
     action :create_if_missing
   end
 
-  # add the default empty applications.xml file
-  file "#{@utils.serversDirectory}/#{new_resource.server_name}/applications.xml" do
-    action :create_if_missing
-    owner new_resource.owner
-    group new_resource.group
-    mode '0755'
-    backup false
-    content "<server description='Applications'></server>"
-  end
-
 end
 
 action :before_deploy do
   add_application
+
+  # TODO: this isn't the correct place to do the start
+  # because before deploy the app file wont be deployed to the correct location yet
+  wlp_server (new_resource.server_name) do
+    action :start
+  end
+
 end
 
-# Add the new application include into the applications.xml file
+# Add the new application include into the server.xml file
 def add_application
     config = ApplicationWLP::Applications.load(node, new_resource.server_name)
     config.include("${server.config.dir}/#{new_resource.application.name}.xml")
