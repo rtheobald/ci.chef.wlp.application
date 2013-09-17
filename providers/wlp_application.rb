@@ -18,10 +18,33 @@
 include Chef::Mixin::LanguageIncludeRecipe
 
 action :before_compile do
+  wlp_server "#{new_resource.server_name}" do
+    config (new_resource.server_config)
+    action :create_if_missing
+  end
 end
 
 action :before_deploy do
+
   create_application_xml_file
+
+  add_application
+
+  # TODO: this isn't the correct place to do the start
+  # because before deploy the app file wont be deployed to the correct location yet
+  wlp_server (new_resource.server_name) do
+    action :start
+  end
+
+end
+
+# Add the new application include into the server.xml file
+def add_application
+    config = ApplicationWLP::Applications.load(node, new_resource.server_name)
+    config.include("${server.config.dir}/#{new_resource.application.name}.xml")
+    if config.modified
+      config.save()
+    end
 end
 
 action :before_migrate do
