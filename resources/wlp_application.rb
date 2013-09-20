@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: application_wlp
-# Resource:: wlp_webapp
+# Resource:: wlp_application
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

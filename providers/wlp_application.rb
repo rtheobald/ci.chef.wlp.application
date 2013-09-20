@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: application_wlp
-# Provider:: wlp_webapp
+# Provider:: wlp_application
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 include Chef::Mixin::LanguageIncludeRecipe
 
 action :before_compile do
-  wlp_server "#{new_resource.server_name}" do
+  wlp_server new_resource.server_name do
     config (new_resource.server_config)
     action :create_if_missing
   end
@@ -32,7 +32,7 @@ action :before_deploy do
 
   # TODO: this isn't the correct place to do the start
   # because before deploy the app file wont be deployed to the correct location yet
-  wlp_server (new_resource.server_name) do
+  wlp_server new_resource.server_name do
     action :start
   end
 
@@ -69,7 +69,7 @@ def create_application_xml_file
             "feature" => new_resource.features
          },
          "application" => {
-            "name" => "#{new_resource.application.name}",
+            "name" => new_resource.application.name,
             "location" => "#{new_resource.application_location || (new_resource.path + '/current/' + IO::File.basename(new_resource.repository))}"
          }
       }
