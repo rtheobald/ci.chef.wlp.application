@@ -18,6 +18,8 @@
 include Chef::Mixin::LanguageIncludeRecipe
 
 action :before_compile do
+  include_recipe "wlp"
+
   wlp_server new_resource.server_name do
     config (new_resource.server_config)
     action :create_if_missing
@@ -40,7 +42,7 @@ end
 
 # Add the new application include into the server.xml file
 def add_application
-    config = ApplicationWLP::Applications.load(node, new_resource.server_name)
+    config = Liberty::Applications::Config.load(node, new_resource.server_name)
     config.include("${server.config.dir}/#{new_resource.application.name}.xml")
     if config.modified
       config.save()
