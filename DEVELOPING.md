@@ -47,17 +47,3 @@ The tests and cookbooks used by [test-kitchen][] are located in the **test/** di
 [Foodcritic]: http://acrmp.github.io/foodcritic/
 [test-kitchen]: https://github.com/opscode/test-kitchen
 
-# Documentation
-
-We use [knife-cookbook-doc][] tool to generate the `README.md` file which contains the cookbook documentation.
-See the [knife-cookbook-doc][] tool documentation on details how to document the cookbook's attributes, recipes, and resources.
-To regenerate the `README.md` file run the following command:
-
-```bash
-$ rake doc
-```
-
-Don't forget to check-in and commit the modified `README.md` file.
-
-[knife-cookbook-doc]: https://github.com/realityforge/knife-cookbook-doc
-

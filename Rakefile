@@ -21,12 +21,6 @@ task :kitchen do
   sh "bundle exec kitchen test"
 end
 
-desc "Runs 'knife cookbook doc'"
-task :doc do
-  sh "bundle exec knife cookbook doc ../#{cookbook_name}"
-end
-
-
 def cookbook_name
   File.basename(File.dirname(__FILE__))
 end
