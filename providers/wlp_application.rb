@@ -32,12 +32,6 @@ action :before_deploy do
 
   add_application
 
-  # TODO: this isn't the correct place to do the start
-  # because before deploy the app file wont be deployed to the correct location yet
-  wlp_server new_resource.server_name do
-    action :start
-  end
-
 end
 
 # Add the new application include into the server.xml file
