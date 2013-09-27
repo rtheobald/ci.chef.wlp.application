@@ -2,7 +2,7 @@ require 'rake/clean'
 
 task :default => :all
 
-task :all => [:knife_test, :foodcritic, :kitchen]
+task :all => [:knife_test, :foodcritic]
 
 task :syntax => :knife_test
 

@@ -41,7 +41,7 @@ To run [test-kitchen][] tests execute:
 $ rake kitchen
 ```
 
-The tests and cookbooks used by [test-kitchen][] are located in the **test/** directory. The [test-kitchen][] tests are slow as virtual machines are created and configured to run the tests. See [How to speed up 'test kitchen' tests](https://github.com/WASdev/ci.chef.wlp/wiki/How-to-speed-up-%27test-kitchen%27-tests) for ways to make it run faster.
+In order to run the [test-kitchen][] tests you must first configure them. Please see [How to run 'test kitchen' tests](https://github.com/WASdev/ci.chef.wlp/wiki/How-to-run-%27test-kitchen%27-tests) for more information. The tests and cookbooks used by [test-kitchen][] are located in the **test/** directory. 
 
 
 [Foodcritic]: http://acrmp.github.io/foodcritic/

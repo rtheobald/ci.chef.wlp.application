@@ -21,7 +21,3 @@ suites:
   run_list: 
   - recipe[minitest-handler]
   - recipe[app_test::basic]
-  attributes:
-    wlp:
-      archive:
-        accept_license: true
