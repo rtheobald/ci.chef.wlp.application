@@ -7,7 +7,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,22 +28,15 @@ class Chef
           @new_resource = Chef::Resource::RemoteFile.new(@deploy_resource.name)
           @new_resource.path ::File.join(@deploy_resource.destination, ::File.basename(@deploy_resource.repository))
           @new_resource.source @deploy_resource.repository
-          unless @deploy_resource.revision == "HEAD"
-            @new_resource.checksum @deploy_resource.revision
-          end
+
           @new_resource.owner @deploy_resource.user
           @new_resource.group @deploy_resource.group
           @action = action
-          @current_resource = nil
-          @run_context = run_context
-          @converge_actions = nil
+          super(@new_resource, run_context) if defined?(super)
         end
 
         def target_revision
-          unless @new_resource.checksum
-            action_sync
-          end
-          @target_revision ||= @new_resource.checksum
+          action_sync
         end
         alias :revision_slug :target_revision
 
@@ -81,8 +74,10 @@ class Chef
         def purge_old_downloads
           converge_by("purge old downloads") do
             Dir.glob( "#{@deploy_resource.destination}/*" ).each do |direntry|
-              FileUtils.rm_rf( direntry ) unless direntry == @new_resource.path
-              Chef::Log.info("#{@new_resource} purged old download #{direntry}")
+              unless direntry == @new_resource.path
+                FileUtils.rm_rf( direntry )
+                Chef::Log.info("#{@new_resource} purged old download #{direntry}")
+              end
             end
           end
         end

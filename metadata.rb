@@ -11,5 +11,5 @@ supports "ubuntu"
 supports "centos"
 supports "redhat"
 
-depends "application", "~> 3.0"
+depends "application", ">= 4.1.2"
 depends "wlp"
