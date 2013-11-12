@@ -17,6 +17,7 @@
 #
 
 require 'chef/provider/remote_file'
+require 'chef/mixin/checksum'
 
 class Chef
   class Provider
@@ -25,25 +26,44 @@ class Chef
 
         def initialize(new_resource, run_context)
           @deploy_resource = new_resource
-          @new_resource = Chef::Resource::RemoteFile.new(@deploy_resource.name)
-          @new_resource.path ::File.join(@deploy_resource.destination, ::File.basename(@deploy_resource.repository))
+          @war = @deploy_resource.name + ".war"
+          @new_resource = Chef::Resource::RemoteFile.new(@war)
+          @new_resource.path ::File.join(@deploy_resource.destination, @war)
           @new_resource.source @deploy_resource.repository
-
+          #@new_resource.atomic_update = true
+          unless @deploy_resource.revision == "HEAD"
+            @new_resource.checksum @deploy_resource.revision
+          end
           @new_resource.owner @deploy_resource.user
           @new_resource.group @deploy_resource.group
           @action = action
-          super(@new_resource, run_context) if defined?(super)
+          @current_resource = nil
+          @run_context = run_context
+          @converge_actions = nil
+          @synched = false
+          @content_class = Chef::Provider::RemoteFile::Content
+          @deployment_strategy = Chef::FileContentManagement::Deploy.strategy(true)
         end
 
+
         def target_revision
-          action_sync
+          unless @new_resource.checksum
+            action_sync
+          end
+          @target_revision ||= @new_resource.checksum
         end
         alias :revision_slug :target_revision
 
         def action_sync
-          create_dir_unless_exists(@deploy_resource.destination)
-          purge_old_downloads
-          action_create
+          if !@synched
+            create_dir_unless_exists(@deploy_resource.destination)
+            purge_old_downloads
+            action_create
+            @synched = true
+          end
+          unless @new_resource.checksum
+            @new_resource.checksum(checksum(@new_resource.path))
+          end
         end
 
         private
@@ -74,10 +94,8 @@ class Chef
         def purge_old_downloads
           converge_by("purge old downloads") do
             Dir.glob( "#{@deploy_resource.destination}/*" ).each do |direntry|
-              unless direntry == @new_resource.path
-                FileUtils.rm_rf( direntry )
-                Chef::Log.info("#{@new_resource} purged old download #{direntry}")
-              end
+              FileUtils.rm_rf( direntry ) unless direntry == @new_resource.path
+              Chef::Log.info("#{@new_resource} purged old download #{direntry}")
             end
           end
         end
