@@ -25,10 +25,10 @@ class Chef
       class Deploy < Chef::Provider::RemoteFile
 
         def initialize(new_resource, run_context)
-          @deploy_resource = new_resource
-          @war = @deploy_resource.name + ".war"
+ 		@deploy_resource = new_resource
+      	@war = @deploy_resource.name + ".war"
           @new_resource = Chef::Resource::RemoteFile.new(@war)
-          @new_resource.path ::File.join(@deploy_resource.destination, @war)
+           @new_resource.path ::File.join(@deploy_resource.destination, @war)
           @new_resource.source @deploy_resource.repository
           #@new_resource.atomic_update = true
           unless @deploy_resource.revision == "HEAD"
@@ -41,10 +41,16 @@ class Chef
           @run_context = run_context
           @converge_actions = nil
           @synched = false
-          @content_class = Chef::Provider::RemoteFile::Content
-          @deployment_strategy = Chef::FileContentManagement::Deploy.strategy(true)
-        end
 
+          if defined?(Chef::Provider::RemoteFile::Content)
+             @content_class = Chef::Provider::RemoteFile::Content
+          end
+
+          if defined?(Chef::FileContentManagement) 
+            @deployment_strategy = Chef::FileContentManagement::Deploy.strategy(true)
+          end
+
+        end
 
         def target_revision
           unless @new_resource.checksum
@@ -56,13 +62,13 @@ class Chef
 
         def action_sync
           if !@synched
-            create_dir_unless_exists(@deploy_resource.destination)
-            purge_old_downloads
-            action_create
-            @synched = true
+      	  create_dir_unless_exists(@deploy_resource.destination)
+  	       purge_old_downloads
+    	       action_create
+    	       @synched = true
           end
           unless @new_resource.checksum
-            @new_resource.checksum(checksum(@new_resource.path))
+  		 @new_resource.checksum(checksum(@new_resource.path))
           end
         end
 
@@ -78,19 +84,18 @@ class Chef
               FileUtils.mkdir_p(dir)
               Chef::Log.debug "#{@new_resource} created directory #{dir}"
               if @new_resource.user
-                FileUtils.chown(@new_resource.user, nil, dir)
-                Chef::Log.debug("#{@new_resource} set user to #{@new_resource.user} for #{dir}")
+     		      FileUtils.chown(@new_resource.user, nil, dir)
+                 Chef::Log.debug("#{@new_resource} set user to #{@new_resource.user} for #{dir}")
               end
               if @new_resource.group
                 FileUtils.chown(nil, @new_resource.group, dir)
                 Chef::Log.debug("#{@new_resource} set group to #{@new_resource.group} for #{dir}")
               end
             rescue => e
-              raise Chef::Exceptions::FileNotFound.new("Cannot create directory #{dir}: #{e.message}")
+    		    raise Chef::Exceptions::FileNotFound.new("Cannot create directory #{dir}: #{e.message}")
             end
           end
         end
-
         def purge_old_downloads
           converge_by("purge old downloads") do
             Dir.glob( "#{@deploy_resource.destination}/*" ).each do |direntry|
@@ -99,7 +104,6 @@ class Chef
             end
           end
         end
-
       end
     end
   end
