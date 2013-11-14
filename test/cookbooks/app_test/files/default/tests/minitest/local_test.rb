@@ -15,19 +15,19 @@
 
 require 'minitest/spec'
 
-describe 'recipe::app_test::basic' do
+describe 'recipe::app_test::local' do
 
   it "server is created" do
-    file("#{node[:wlp][:base_dir]}/wlp/usr/servers/jsp-examples/server.xml").must_exist
+    file("#{node[:wlp][:base_dir]}/wlp/usr/servers/jsp-examples-local/server.xml").must_exist
   end
 
   it "boots on startup" do
-    service("wlp-jsp-examples").must_be_enabled
+    service("wlp-jsp-examples-local").must_be_enabled
   end
 
   it "runs as a daemon" do
     # Work-around as described in https://github.com/calavera/minitest-chef-handler/issues/22
-    s = service("wlp-jsp-examples")
+    s = service("wlp-jsp-examples-local")
     s.supports([:status])
     s.run_context = run_context
     ::Chef::Platform.provider_for_resource(s).load_current_resource.must_be_running
@@ -36,7 +36,7 @@ describe 'recipe::app_test::basic' do
   def send_request
     for i in 1..10
       begin
-        url = URI.parse('http://localhost:9080/jsp-examples/jsp2/el/basic-arithmetic.jsp')
+        url = URI.parse('http://localhost:9080/jsp-examples-local/jsp2/el/basic-arithmetic.jsp')
         req = Net::HTTP::Get.new(url.path)
         res = Net::HTTP.start(url.host, url.port) {|http|
           http.request(req)
