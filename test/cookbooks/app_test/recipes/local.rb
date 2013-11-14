@@ -15,21 +15,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-server_name = "jsp-examples"
+include_recipe "wlp"
 
-application "jsp-examples" do
+uri = ::URI.parse("http://central.maven.org/maven2/org/apache/geronimo/samples/jsp-examples-war/3.0-M1/jsp-examples-war-3.0-M1.war")
+base_filename = ::File.basename(uri.path)
+cache_file = "#{Chef::Config[:file_cache_path]}/#{base_filename}"
 
-  repository "http://central.maven.org/maven2/org/apache/geronimo/samples/jsp-examples-war/3.0-M1/jsp-examples-war-3.0-M1.war"
-  path "/usr/local/jsp-examples"
-  scm_provider Chef::Provider::RemoteFile::Deploy
-  owner "wlp"
-  group "wlp-admin"
+remote_file cache_file do
+  source uri.to_s
+  user node[:wlp][:user]
+  group node[:wlp][:group]
+end
+
+server_name = "jsp-examples-local"
+
+application "jsp-examples-local" do
+  repository cache_file
+  path "/usr/local/jsp-examples-local"
+  scm_provider Chef::Provider::File::Deploy
+
+  owner node[:wlp][:user]
+  group node[:wlp][:group]
 
   wlp_application do
     server_name server_name
     features [ "jsp-2.2" ]
   end
-
 end
 
 # start server if it is not running already

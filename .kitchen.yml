@@ -17,7 +17,11 @@ platforms:
   - recipe[test_helper::fix_permissions]
 
 suites:
-- name: basic
+- name: local
   run_list: 
   - recipe[minitest-handler]
-  - recipe[app_test::basic]
+  - recipe[app_test::local]
+- name: remote
+  run_list: 
+  - recipe[minitest-handler]
+  - recipe[app_test::remote]
