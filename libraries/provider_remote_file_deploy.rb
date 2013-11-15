@@ -25,10 +25,11 @@ class Chef
       class Deploy < Chef::Provider::RemoteFile
 
         def initialize(new_resource, run_context)
- 		@deploy_resource = new_resource
-      	@war = @deploy_resource.name + ".war"
-          @new_resource = Chef::Resource::RemoteFile.new(@war)
-           @new_resource.path ::File.join(@deploy_resource.destination, @war)
+          @deploy_resource = new_resource
+
+          @new_resource = Chef::Resource::RemoteFile.new(@deploy_resource.name)
+          uri = ::URI.parse(@deploy_resource.repository)
+          @new_resource.path ::File.join(@deploy_resource.destination, ::File.basename(uri.path))
           @new_resource.source @deploy_resource.repository
           #@new_resource.atomic_update = true
           unless @deploy_resource.revision == "HEAD"
@@ -36,7 +37,8 @@ class Chef
           end
           @new_resource.owner @deploy_resource.user
           @new_resource.group @deploy_resource.group
-          @action = action
+
+          @action = nil
           @current_resource = nil
           @run_context = run_context
           @converge_actions = nil
@@ -62,13 +64,13 @@ class Chef
 
         def action_sync
           if !@synched
-      	  create_dir_unless_exists(@deploy_resource.destination)
-  	       purge_old_downloads
-    	       action_create
-    	       @synched = true
+            create_dir_unless_exists(@deploy_resource.destination)
+            purge_old_downloads
+            action_create
+            @synched = true
           end
           unless @new_resource.checksum
-  		 @new_resource.checksum(checksum(@new_resource.path))
+            @new_resource.checksum(checksum(@new_resource.path))
           end
         end
 
