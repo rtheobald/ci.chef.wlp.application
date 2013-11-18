@@ -7,6 +7,10 @@ Note that this cookbook provides the Liberty Profile specific bindings for the a
 
 # Requirements
 
+## Chef:
+
+* Chef version 11.6 or greater
+
 ## Platform:
 
 * Debian
