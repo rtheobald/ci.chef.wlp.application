@@ -50,8 +50,8 @@ application "my-app" do
   scm_provider Chef::Provider::File::Deploy
 
   wlp_application do
-      server_name "MyAppServer"
-      features [ "jsp-2.2", "servlet-3.0" ]
+    server_name "MyAppServer"
+    features [ "jsp-2.2", "servlet-3.0" ]
   end
 end
 ```
@@ -64,14 +64,14 @@ application "my-app" do
   scm_provider Chef::Provider::File::Deploy
 
   wlp_application do
-      server_name "MyAppServer"
-      config ({
-        "featureManager" => { 
-          "feature" => ["jsp-2.2" ] },
-        "application" => {
-          "name" => "myApp",
-          "location" => "/usr/local/my-app/current/my-app.war" }
-      })
+    server_name "MyAppServer"
+    config ({
+      "featureManager" => { 
+        "feature" => ["jsp-2.2" ] },
+      "application" => {
+        "name" => "myApp",
+        "location" => "/usr/local/my-app/current/my-app.war" }
+    })
   end
 end
 ```
