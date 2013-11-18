@@ -43,37 +43,37 @@ The LWRPs provided by this cookbook are not meant to be used by themselves; make
 
 Deploy an application to Liberty:
 ```ruby
-    application "my-app" do
-      path "/usr/local/my-app"
-      repository "/nas/distro/my-app.war"
-      revision "..."
-      scm_provider Chef::Provider::File::Deploy
+application "my-app" do
+  path "/usr/local/my-app"
+  repository "/nas/distro/my-app.war"
+  revision "..."
+  scm_provider Chef::Provider::File::Deploy
 
-      wlp_application do
-          server_name "MyAppServer"
-          features [ "jsp-2.2", "servlet-3.0" ]
-      end
-    end
+  wlp_application do
+      server_name "MyAppServer"
+      features [ "jsp-2.2", "servlet-3.0" ]
+  end
+end
 ```
 If you need to provide custom application configuration you can provide your own server.xml configuration:
 ```ruby
-    application "my-app" do
-      path "/usr/local/my-app"
-      repository "/nas/distro/my-app.war"
-      revision "..."
-			scm_provider Chef::Provider::File::Deploy
+application "my-app" do
+  path "/usr/local/my-app"
+  repository "/nas/distro/my-app.war"
+  revision "..."
+  scm_provider Chef::Provider::File::Deploy
 
-      wlp_application do
-          server_name "MyAppServer"
-          config ({
-            "featureManager" => { 
-              "feature" => ["jsp-2.2" ] },
-            "application" => {
-              "name" => "myApp",
-              "location" => "/usr/local/my-app/current/my-app.war" }
-          })
-      end
-    end
+  wlp_application do
+      server_name "MyAppServer"
+      config ({
+        "featureManager" => { 
+          "feature" => ["jsp-2.2" ] },
+        "application" => {
+          "name" => "myApp",
+          "location" => "/usr/local/my-app/current/my-app.war" }
+      })
+  end
+end
 ```
 # Support
 
