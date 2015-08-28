@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "wlp"
+include_recipe "wlp_ibm"
 
 uri = ::URI.parse("http://central.maven.org/maven2/org/apache/geronimo/samples/jsp-examples-war/3.0-M1/jsp-examples-war-3.0-M1.war")
 base_filename = ::File.basename(uri.path)
