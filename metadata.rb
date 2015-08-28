@@ -12,4 +12,4 @@ supports "centos"
 supports "redhat"
 
 depends "application", ">= 4.1.2"
-depends "wlp"
+depends "wlp_ibm"
