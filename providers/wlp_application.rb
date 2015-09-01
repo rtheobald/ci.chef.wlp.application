@@ -75,7 +75,7 @@ def create_application_xml_file
       config = new_resource.config
     end
 
-    wlp_config "#{@utils.serversDirectory}/#{new_resource.server_name}/#{new_resource.application.name}.xml" do
+    wlp_ibm_config "#{@utils.serversDirectory}/#{new_resource.server_name}/#{new_resource.application.name}.xml" do
       config config
     end
 
