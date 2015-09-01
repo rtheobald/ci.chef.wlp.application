@@ -22,7 +22,7 @@ include Chef::Mixin::LanguageIncludeRecipe
 action :before_compile do
   include_recipe "wlp_ibm"
 
-  wlp_server new_resource.server_name do
+  wlp_ibm_server new_resource.server_name do
     config (new_resource.server_config)
     action :create_if_missing
   end

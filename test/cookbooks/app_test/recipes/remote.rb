@@ -32,6 +32,6 @@ application "jsp-examples-remote" do
 end
 
 # start server if it is not running already
-wlp_server server_name do
+wlp_ibm_server server_name do
   action :start
 end
