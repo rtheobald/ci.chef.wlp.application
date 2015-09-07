@@ -24,7 +24,7 @@ action :before_compile do
 
   wlp_ibm_server new_resource.server_name do
     config (new_resource.server_config)
-    action :create_if_missing
+    action :create
   end
 end
 
